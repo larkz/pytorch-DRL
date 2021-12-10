@@ -8,6 +8,7 @@ import numpy as np
 from common.Agent import Agent
 from common.Model import ActorNetwork, CriticNetwork
 from common.utils import entropy, index_to_one_hot, to_tensor_var
+from run_a2c import REWARD_DISCOUNTED_GAMMA
 
 
 class MAA2C(Agent):
@@ -144,6 +145,8 @@ class MAA2C(Agent):
         for agent_id in range(self.n_agents):
             # rewards[:,agent_id] = self._discount_reward(rewards[:,agent_id], final_r[agent_id])
             rewards[agent_id] = self._discount_reward(rewards[agent_id], final_r[agent_id])
+            print("rewards")
+            print(rewards)
         rewards = rewards.tolist()
         self.n_steps += 1
         self.memory.push(states, actions, rewards)
