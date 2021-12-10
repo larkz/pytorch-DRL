@@ -59,6 +59,8 @@ def run(env_id="CartPole-v0"):
 
     episodes =[]
     eval_rewards =[]
+    '''
+    
     while a2c.n_episodes < MAX_EPISODES:
         a2c.interact()
         if a2c.n_episodes >= EPISODES_BEFORE_TRAIN:
@@ -82,6 +84,7 @@ def run(env_id="CartPole-v0"):
     plt.ylabel("Average Reward")
     plt.legend(["A2C"])
     plt.savefig("./output/%s_a2c.png"%env_id)
+    '''
 
 
 if __name__ == "__main__":
