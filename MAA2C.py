@@ -142,7 +142,8 @@ class MAA2C(Agent):
 
         rewards = np.array(rewards)
         for agent_id in range(self.n_agents):
-            rewards[:,agent_id] = self._discount_reward(rewards[:,agent_id], final_r[agent_id])
+            # rewards[:,agent_id] = self._discount_reward(rewards[:,agent_id], final_r[agent_id])
+            rewards[agent_id] = self._discount_reward(rewards[agent_id], final_r[agent_id])
         rewards = rewards.tolist()
         self.n_steps += 1
         self.memory.push(states, actions, rewards)
