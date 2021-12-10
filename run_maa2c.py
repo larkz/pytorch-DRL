@@ -59,6 +59,9 @@ def run(env_id="CartPole-v0"):
 
     episodes =[]
     eval_rewards =[]
+
+    a2c.interact()
+
     '''
     
     while a2c.n_episodes < MAX_EPISODES:
