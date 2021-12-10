@@ -115,18 +115,29 @@ class MAA2C(Agent):
             self.n_steps = 0
         states = []
         actions = []
-        rewards = []
+        rewards = [[],[]]
         # take n steps
         for i in range(self.roll_out_n_steps):
+            states.append(self.env_state)
+            action = self.exploration_action(self.env_state)
+            print(action)
+            next_state, reward, done, _ = self.env.step(action[0])
+            # done = done[0]
+            actions.append([index_to_one_hot(a, self.action_dim) for a in action])
+            rewards[0].append(reward)
+            final_state = next_state
+            self.env_state = next_state
+
             states.append(self.env_state)
             action = self.exploration_action(self.env_state)
             print(action)
             next_state, reward, done, _ = self.env.step(action[1])
             # done = done[0]
             actions.append([index_to_one_hot(a, self.action_dim) for a in action])
-            rewards.append(reward)
+            rewards[1].append(reward)
             final_state = next_state
             self.env_state = next_state
+
             if done:
                 self.env_state = self.env.reset()
                 break
