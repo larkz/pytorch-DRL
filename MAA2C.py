@@ -81,7 +81,8 @@ class MAA2C(Agent):
         if self.training_strategy == "cocurrent":
             self.critics = [CriticNetwork(self.state_dim, self.action_dim, self.critic_hidden_size, 1)] * self.n_agents
         elif self.training_strategy == "centralized":
-            critic_state_dim = self.n_agents * self.state_dim
+            # critic_state_dim = self.n_agents * self.state_dim
+            critic_state_dim = self.state_dim
             critic_action_dim = self.n_agents * self.action_dim
             self.critics = [CriticNetwork(critic_state_dim, critic_action_dim, self.critic_hidden_size, 1)] * self.n_agents
         if optimizer_type == "adam":
