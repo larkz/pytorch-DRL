@@ -48,7 +48,7 @@ class CriticNetworkMA(nn.Module):
     A network for critic
     """
     def __init__(self, state_dim, action_dim, hidden_size, output_size=1):
-        super(CriticNetwork, self).__init__()
+        super(CriticNetworkMA, self).__init__()
         self.fc1 = nn.Linear(state_dim, hidden_size)
         self.fc2 = nn.Linear(hidden_size + action_dim, hidden_size)
         self.fc3 = nn.Linear(hidden_size, output_size)
