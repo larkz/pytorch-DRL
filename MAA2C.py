@@ -241,6 +241,8 @@ class MAA2C(Agent):
             if self.training_strategy == "cocurrent":
                 value_var = self.critics[agent_id](state_var[:,agent_id,:], action_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
+                print("whole action var")
+                print(whole_action_var)
                 value_var = self.critics[agent_id](whole_state_var, whole_action_var[0])
             if self.use_cuda:
                 values[agent_id] = value_var.data.cpu().numpy()[0]
