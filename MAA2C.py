@@ -195,7 +195,8 @@ class MAA2C(Agent):
                 print("STATES VAR actions VAR")
                 print(states_var.size())
                 print(actions_var.size())
-                values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
+                # values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
+                values = self.critics(states_var, actions_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
                 values = self.critics[agent_id](whole_states_var, whole_actions_var)
             advantages = rewards_var[:,agent_id,:] - values.detach()
