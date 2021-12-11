@@ -33,7 +33,7 @@ class CriticNetwork(nn.Module):
         self.fc3 = nn.Linear(hidden_size, output_size)
 
     def __call__(self, state, action):
-        out = nn.functional.relu(self.fc1(state.to(device='cuda:0')))
+        out = nn.functional.relu(self.fc1(state.cuda()))
         out = th.cat([out, action], 1)
         out = nn.functional.relu(self.fc2(out))
         out = self.fc3(out)
