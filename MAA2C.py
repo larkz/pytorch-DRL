@@ -195,6 +195,8 @@ class MAA2C(Agent):
         for agent_id in range(self.n_agents):
             print("actors")
             print(self.actors)
+            print("state_Var")
+            print(state_var)
             softmax_action_var = th.exp(self.actors[agent_id](state_var[:,agent_id,:]))
             if self.use_cuda:
                 softmax_action[agent_id] = softmax_action_var.data.cpu().numpy()[0]
