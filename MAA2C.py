@@ -117,7 +117,7 @@ class MAA2C(Agent):
         rewards = []
         # take n steps
         for i in range(self.roll_out_n_steps):
-            states.append([self.env_state]*self.n_agents)
+            states.append(self.env_state)
             action = self.exploration_action(self.env_state)
             next_state, reward, done, _ = self.env.step(action)
             done = done[0]
