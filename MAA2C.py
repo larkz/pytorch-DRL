@@ -193,6 +193,8 @@ class MAA2C(Agent):
         state_var = to_tensor_var([state], self.use_cuda)
         softmax_action = np.zeros((self.n_agents, self.action_dim), dtype=np.float64)
         for agent_id in range(self.n_agents):
+            print("actors")
+            print(self.actors)
             softmax_action_var = th.exp(self.actors[agent_id](state_var[:,agent_id,:]))
             if self.use_cuda:
                 softmax_action[agent_id] = softmax_action_var.data.cpu().numpy()[0]
