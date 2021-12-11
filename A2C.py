@@ -100,10 +100,11 @@ class A2C(Agent):
     def _softmax_action(self, state):
         state_var = to_tensor_var([state], self.use_cuda)
         softmax_action_var = th.exp(self.actor(state_var))
-        if self.use_cuda:
-            softmax_action = softmax_action_var.data.cpu().numpy()[0]
-        else:
-            softmax_action = softmax_action_var.data.numpy()[0]
+        # if self.use_cuda:
+        #     softmax_action = softmax_action_var.data.cpu().numpy()[0]
+        # else:
+        #     softmax_action = softmax_action_var.data.numpy()[0]
+        softmax_action = softmax_action_var.data.numpy()[0]
         return softmax_action
 
     # choose an action based on state with random noise added for exploration in training
@@ -129,8 +130,9 @@ class A2C(Agent):
         action = index_to_one_hot(action, self.action_dim)
         action_var = to_tensor_var([action], self.use_cuda)
         value_var = self.critic(state_var, action_var)
-        if self.use_cuda:
-            value = value_var.data.cpu().numpy()[0]
-        else:
-            value = value_var.data.numpy()[0]
+        # if self.use_cuda:
+        #     value = value_var.data.cpu().numpy()[0]
+        # else:
+        #     value = value_var.data.numpy()[0]
+        value = value_var.data.numpy()[0]
         return value
