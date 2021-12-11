@@ -193,8 +193,8 @@ class MAA2C(Agent):
                 print(states_var)
                 # values = self.critics[agent_id](states_var[:,agent_id,:], actions_var[:,agent_id,:])
                 print("STATES VAR actions VAR")
-                print(states_var)
-                print(actions_var)
+                print(states_var.size())
+                print(actions_var.size())
                 values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
                 values = self.critics[agent_id](whole_states_var, whole_actions_var)
