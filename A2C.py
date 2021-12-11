@@ -104,7 +104,7 @@ class A2C(Agent):
         #     softmax_action = softmax_action_var.data.cpu().numpy()[0]
         # else:
         #     softmax_action = softmax_action_var.data.numpy()[0]
-        softmax_action = softmax_action_var.data.numpy()[0]
+        softmax_action = softmax_action_var.data.detach().numpy()[0]
         return softmax_action
 
     # choose an action based on state with random noise added for exploration in training
@@ -134,5 +134,5 @@ class A2C(Agent):
         #     value = value_var.data.cpu().numpy()[0]
         # else:
         #     value = value_var.data.numpy()[0]
-        value = value_var.data.numpy()[0]
+        value = value_var.data.detach().numpy()[0]
         return value
