@@ -59,7 +59,7 @@ class CriticNetworkMA(nn.Module):
         print(out.size())
         print(action.size())
 
-        out = th.cat([out, action], 2)
+        out = th.cat([out, action], 0)
         out = nn.functional.relu(self.fc2(out))
         out = self.fc3(out)
         return out
