@@ -245,7 +245,7 @@ class MAA2C(Agent):
                 print(whole_state_var)
                 print("whole action var")
                 print(whole_action_var)
-                value_var = self.critics[agent_id](whole_state_var, whole_action_var[:, agent_id])
+                value_var = self.critics[agent_id](whole_state_var, whole_action_var)
             if self.use_cuda:
                 values[agent_id] = value_var.data.cpu().numpy()[0]
             else:
