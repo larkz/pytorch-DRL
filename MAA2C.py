@@ -182,6 +182,8 @@ class MAA2C(Agent):
             entropy_loss = th.mean(entropy(th.exp(action_log_probs)))
             action_log_probs = th.sum(action_log_probs * actions_var[:,agent_id,:], 1)
             if self.training_strategy == "cocurrent":
+                print("states var")
+                print(states_var)
                 values = self.critics[agent_id](states_var[:,agent_id,:], actions_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
                 values = self.critics[agent_id](whole_states_var, whole_actions_var)
