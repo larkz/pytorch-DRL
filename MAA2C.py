@@ -6,7 +6,7 @@ from torch.optim import Adam, RMSprop
 import numpy as np
 
 from common.Agent import Agent
-from common.Model import ActorNetwork, CriticNetwork
+from common.Model import ActorNetwork, CriticNetwork, CriticNetworkMA
 from common.utils import entropy, index_to_one_hot, to_tensor_var
 from run_a2c import REWARD_DISCOUNTED_GAMMA
 
@@ -80,11 +80,11 @@ class MAA2C(Agent):
 
         self.actors = [ActorNetwork(self.state_dim, self.actor_hidden_size, self.action_dim, self.actor_output_act)] * self.n_agents
         if self.training_strategy == "cocurrent":
-            self.critics = [CriticNetwork(self.state_dim, self.action_dim, self.critic_hidden_size, 1)] * self.n_agents
+            self.critics = [CriticNetworkMA(self.state_dim, self.action_dim, self.critic_hidden_size, 1)] * self.n_agents
         elif self.training_strategy == "centralized":
             critic_state_dim = self.n_agents * self.state_dim
             critic_action_dim = self.n_agents * self.action_dim
-            self.critics = [CriticNetwork(critic_state_dim, critic_action_dim, self.critic_hidden_size, 1)] * self.n_agents
+            self.critics = [CriticNetworkMA(critic_state_dim, critic_action_dim, self.critic_hidden_size, 1)] * self.n_agents
         if optimizer_type == "adam":
             self.actor_optimizers = [Adam(a.parameters(), lr=self.actor_lr) for a in self.actors]
             self.critic_optimizers = [Adam(c.parameters(), lr=self.critic_lr) for c in self.critics]
@@ -195,8 +195,8 @@ class MAA2C(Agent):
                 print("STATES VAR actions VAR")
                 print(states_var.size())
                 print(actions_var.size())
-                # values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
-                values = self.critics[agent_id](states_var, actions_var)
+                values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
+                # values = self.critics[agent_id](states_var, actions_var)
             elif self.training_strategy == "centralized":
                 values = self.critics[agent_id](whole_states_var, whole_actions_var)
             advantages = rewards_var[:,agent_id,:] - values.detach()
