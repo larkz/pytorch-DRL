@@ -6,9 +6,8 @@ from torch.optim import Adam, RMSprop
 import numpy as np
 
 from common.Agent import Agent
-from common.Model import ActorNetwork, CriticNetwork, CriticNetworkMA
+from common.Model import ActorNetwork, CriticNetwork
 from common.utils import entropy, index_to_one_hot, to_tensor_var
-from run_a2c import REWARD_DISCOUNTED_GAMMA
 
 
 class MAA2C(Agent):
@@ -80,11 +79,11 @@ class MAA2C(Agent):
 
         self.actors = [ActorNetwork(self.state_dim, self.actor_hidden_size, self.action_dim, self.actor_output_act)] * self.n_agents
         if self.training_strategy == "cocurrent":
-            self.critics = [CriticNetworkMA(self.state_dim, self.action_dim, self.critic_hidden_size, 1)] * self.n_agents
+            self.critics = [CriticNetwork(self.state_dim, self.action_dim, self.critic_hidden_size, 1)] * self.n_agents
         elif self.training_strategy == "centralized":
             critic_state_dim = self.n_agents * self.state_dim
             critic_action_dim = self.n_agents * self.action_dim
-            self.critics = [CriticNetworkMA(critic_state_dim, critic_action_dim, self.critic_hidden_size, 1)] * self.n_agents
+            self.critics = [CriticNetwork(critic_state_dim, critic_action_dim, self.critic_hidden_size, 1)] * self.n_agents
         if optimizer_type == "adam":
             self.actor_optimizers = [Adam(a.parameters(), lr=self.actor_lr) for a in self.actors]
             self.critic_optimizers = [Adam(c.parameters(), lr=self.critic_lr) for c in self.critics]
@@ -115,34 +114,17 @@ class MAA2C(Agent):
             self.n_steps = 0
         states = []
         actions = []
-        rewards = [[],[]]
+        rewards = []
         # take n steps
         for i in range(self.roll_out_n_steps):
             states.append(self.env_state)
             action = self.exploration_action(self.env_state)
-            next_state, reward, done, _ = self.env.step(action[0])
-            # done = done[0]
-            print("action 0")
-            print(action)
+            next_state, reward, done, _ = self.env.step(action)
+            done = done[0]
             actions.append([index_to_one_hot(a, self.action_dim) for a in action])
-            print("actions 0")
-            print(actions)
-            rewards[0].append(reward)
+            rewards.append(reward)
             final_state = next_state
             self.env_state = next_state
-
-            states.append(self.env_state)
-            action = self.exploration_action(self.env_state)
-            
-            next_state, reward, done, _ = self.env.step(action[1])
-            # done = done[0]
-            actions.append([index_to_one_hot(a, self.action_dim) for a in action])
-            print("actions 1")
-            print(action)
-            rewards[1].append(reward)
-            final_state = next_state
-            self.env_state = next_state
-
             if done:
                 self.env_state = self.env.reset()
                 break
@@ -158,12 +140,8 @@ class MAA2C(Agent):
             final_r = self.value(final_state, one_hot_action)
 
         rewards = np.array(rewards)
-        print("rewards")
-        print(rewards)
         for agent_id in range(self.n_agents):
             rewards[:,agent_id] = self._discount_reward(rewards[:,agent_id], final_r[agent_id])
-            # rewards[agent_id] = self._discount_reward(rewards[agent_id], final_r[agent_id])
-            
         rewards = rewards.tolist()
         self.n_steps += 1
         self.memory.push(states, actions, rewards)
@@ -174,8 +152,7 @@ class MAA2C(Agent):
             pass
 
         batch = self.memory.sample(self.batch_size)
-        # states_var = to_tensor_var(batch.states, self.use_cuda).view(-1, self.n_agents, self.state_dim)
-        states_var = to_tensor_var(batch.states, self.use_cuda).view(-1, 1, self.state_dim)
+        states_var = to_tensor_var(batch.states, self.use_cuda).view(-1, self.n_agents, self.state_dim)
         actions_var = to_tensor_var(batch.actions, self.use_cuda).view(-1, self.n_agents, self.action_dim)
         rewards_var = to_tensor_var(batch.rewards, self.use_cuda).view(-1, self.n_agents, 1)
         whole_states_var = states_var.view(-1, self.n_agents*self.state_dim)
@@ -185,18 +162,10 @@ class MAA2C(Agent):
             # update actor network
             self.actor_optimizers[agent_id].zero_grad()
             action_log_probs = self.actors[agent_id](states_var[:,agent_id,:])
-            action_log_probs = self.actors[agent_id](states_var)
             entropy_loss = th.mean(entropy(th.exp(action_log_probs)))
             action_log_probs = th.sum(action_log_probs * actions_var[:,agent_id,:], 1)
             if self.training_strategy == "cocurrent":
-                print("states var")
-                print(states_var)
-                # values = self.critics[agent_id](states_var[:,agent_id,:], actions_var[:,agent_id,:])
-                print("STATES VAR actions VAR")
-                print(states_var.size())
-                print(actions_var.size())
-                values = self.critics[agent_id](states_var, actions_var[:,agent_id,:])
-                # values = self.critics[agent_id](states_var, actions_var)
+                values = self.critics[agent_id](states_var[:,agent_id,:], actions_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
                 values = self.critics[agent_id](whole_states_var, whole_actions_var)
             advantages = rewards_var[:,agent_id,:] - values.detach()
@@ -224,8 +193,7 @@ class MAA2C(Agent):
         state_var = to_tensor_var([state], self.use_cuda)
         softmax_action = np.zeros((self.n_agents, self.action_dim), dtype=np.float64)
         for agent_id in range(self.n_agents):
-            # softmax_action_var = th.exp(self.actors[agent_id](state_var[:,agent_id,:]))
-            softmax_action_var = th.exp(self.actors[agent_id](state_var))
+            softmax_action_var = th.exp(self.actors[agent_id](state_var[:,agent_id,:]))
             if self.use_cuda:
                 softmax_action[agent_id] = softmax_action_var.data.cpu().numpy()[0]
             else:
@@ -255,15 +223,12 @@ class MAA2C(Agent):
     def value(self, state, action):
         state_var = to_tensor_var([state], self.use_cuda)
         action_var = to_tensor_var([action], self.use_cuda)
-        # whole_state_var = state_var.view(-1, self.n_agents*self.state_dim)
-        whole_state_var = state_var.view(-1, self.state_dim)
-        # whole_action_var = action_var.view(-1, self.n_agents*self.action_dim)
-        whole_action_var = action_var.view(-1, self.action_dim)
+        whole_state_var = state_var.view(-1, self.n_agents*self.state_dim)
+        whole_action_var = action_var.view(-1, self.n_agents*self.action_dim)
         values = [0]*self.n_agents
         for agent_id in range(self.n_agents):
             if self.training_strategy == "cocurrent":
-                # value_var = self.critics[agent_id](state_var[:,agent_id,:], action_var[:,agent_id,:])
-                value_var = self.critics[agent_id](state_var, action_var[:,agent_id,:])
+                value_var = self.critics[agent_id](state_var[:,agent_id,:], action_var[:,agent_id,:])
             elif self.training_strategy == "centralized":
                 value_var = self.critics[agent_id](whole_state_var, whole_action_var)
             if self.use_cuda:
