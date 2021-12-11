@@ -55,7 +55,7 @@ class CriticNetworkMA(nn.Module):
 
     def __call__(self, state, action):
         out = nn.functional.relu(self.fc1(state))
-        print("OUT, ation")
+        print("OUT, action")
         print(out.size())
         print(action.size())
         print(action)
