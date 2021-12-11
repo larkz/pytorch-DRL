@@ -16,7 +16,7 @@ class ActorNetwork(nn.Module):
         self.output_act = output_act
 
     def __call__(self, state):
-        out = nn.functional.relu(self.fc1(state)).to(device='cuda:0')
+        out = nn.functional.relu(self.fc1(state)).cpu().to(device='cuda:0')
         out = nn.functional.relu(self.fc2(out))
         out = self.output_act(self.fc3(out))
         return out
@@ -33,7 +33,7 @@ class CriticNetwork(nn.Module):
         self.fc3 = nn.Linear(hidden_size, output_size)
 
     def __call__(self, state, action):
-        out = nn.functional.relu(self.fc1(state)).to(device='cuda:0')
+        out = nn.functional.relu(self.fc1(state)).cpu().to(device='cuda:0')
         out = th.cat([out, action], 1)
         out = nn.functional.relu(self.fc2(out))
         out = self.fc3(out)
@@ -54,7 +54,7 @@ class ActorCriticNetwork(nn.Module):
         self.actor_output_act = actor_output_act
 
     def __call__(self, state):
-        out = nn.functional.relu(self.fc1(state)).to(device='cuda:0')
+        out = nn.functional.relu(self.fc1(state)).cpu().to(device='cuda:0')
         out = nn.functional.relu(self.fc2(out))
         act = self.actor_output_act(self.actor_linear(out))
         val = self.critic_linear(out)
