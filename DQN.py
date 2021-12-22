@@ -96,7 +96,7 @@ class DQN(Agent):
             # loss = th.nn.MSELoss()(current_value, next_value)
             # loss = th.nn.MSELoss()(current_value + nash_epsilon, next_value)
         '''
-        loss = th.nn.MSELoss()(target_q, target_q + nash_epsilon)
+        loss = th.nn.MSELoss()(target_q, current_q)
         
         
         loss.backward()
