@@ -78,7 +78,7 @@ class DQN(Agent):
         # compute target q by: r + gamma * max_a { V(s_{t+1}) }
         target_q = self.reward_scale * rewards_var + self.reward_gamma * next_q * (1. - dones_var)
 
-        epsilon = 0.1
+        epsilon = 0.0
 
         # update value network
         self.actor_optimizer.zero_grad()
