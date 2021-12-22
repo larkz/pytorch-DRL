@@ -17,7 +17,7 @@ EVAL_INTERVAL = 100
 MAX_STEPS = 10000 # None
 
 MEMORY_CAPACITY = 10000
-BATCH_SIZE = 100
+BATCH_SIZE = 100 # 100
 CRITIC_LOSS = "mse"
 MAX_GRAD_NORM = None
 
@@ -38,6 +38,10 @@ def run(env_id="CartPole-v0"):
     env.seed(RANDOM_SEED)
     env_eval = gym.make(env_id)
     env_eval.seed(RANDOM_SEED)
+
+    env._max_episode_steps = 600
+    env_eval._max_episode_steps = 600
+
     state_dim = env.observation_space.shape[0]
     if len(env.action_space.shape) > 1:
         action_dim = env.action_space.shape[0]
