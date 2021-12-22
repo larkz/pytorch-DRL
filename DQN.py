@@ -69,7 +69,10 @@ class DQN(Agent):
 
         # compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
+        actor_output = self.actor(states_var)
         current_q = self.actor(states_var).gather(1, actions_var)
+        # potentially compute value
+        current_value = th.max(actor_output, 1)[0].view(-1, 1)
 
         # compute V(s_{t+1}) for all next states and all actions,
         # and we then take max_a { V(s_{t+1}) }
@@ -81,12 +84,13 @@ class DQN(Agent):
         epsilon = 0.0
 
         # update value network
+        # potentially use difference between current_value and next_value
         self.actor_optimizer.zero_grad()
         if self.critic_loss == "huber":
             # loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
-            loss = th.nn.functional.smooth_l1_loss(current_q + epsilon, target_q)
+            loss = th.nn.functional.smooth_l1_loss(current_value + epsilon, next_value)
         else:
-            loss = th.nn.MSELoss()(current_q + epsilon, target_q)
+            loss = th.nn.MSELoss()(current_value + epsilon, next_value)
         loss.backward()
         if self.max_grad_norm is not None:
             nn.utils.clip_grad_norm(self.actor.parameters(), self.max_grad_norm)
