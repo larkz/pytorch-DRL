@@ -87,8 +87,8 @@ class DQN(Agent):
         # potentially use difference between current_value and next_value
         self.actor_optimizer.zero_grad()
         if self.critic_loss == "huber":
-            loss = th.nn.functional.smooth_l1_loss(current_value, next_value)
-            # loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
+            # loss = th.nn.functional.smooth_l1_loss(current_value, next_value)
+            loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
             # loss = th.nn.functional.smooth_l1_loss(current_value + nash_epsilon, next_value)
         else:
             loss = th.nn.MSELoss()(current_q, target_q)
