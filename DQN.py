@@ -81,18 +81,18 @@ class DQN(Agent):
         # compute target q by: r + gamma * max_a { V(s_{t+1}) }
         target_q = self.reward_scale * rewards_var + self.reward_gamma * next_value * (1. - dones_var)
 
-        nash_epsilon = 0.0
+        nash_epsilon = 0.3
 
         # update value network
         # potentially use difference between current_value and next_value
         self.actor_optimizer.zero_grad()
         if self.critic_loss == "huber":
-            # loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
             loss = th.nn.functional.smooth_l1_loss(current_value, next_value)
+            # loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
             # loss = th.nn.functional.smooth_l1_loss(current_value + nash_epsilon, next_value)
         else:
-            # loss = th.nn.MSELoss()(current_q, target_q)
-            loss = th.nn.MSELoss()(current_value, next_value)
+            loss = th.nn.MSELoss()(current_q, target_q + nash_epsilon)
+            # loss = th.nn.MSELoss()(current_value, next_value)
             # loss = th.nn.MSELoss()(current_value + nash_epsilon, next_value)
         loss.backward()
         if self.max_grad_norm is not None:
