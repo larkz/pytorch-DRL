@@ -36,8 +36,8 @@ class DQN(Agent):
                  epsilon_start, epsilon_end, epsilon_decay,
                  use_cuda)
 
-        self.actor = ActorNetwork(self.state_dim, self.actor_hidden_size,
-                                          self.action_dim, self.actor_output_act)
+        self.actor = ActorNetwork(self.state_dim, self.actor_hidden_size, self.action_dim, self.actor_output_act)
+        
         if self.optimizer_type == "adam":
             self.actor_optimizer = Adam(self.actor.parameters(), lr=self.actor_lr)
         elif self.optimizer_type == "rmsprop":
@@ -61,11 +61,11 @@ class DQN(Agent):
         next_states_var = to_tensor_var(batch.next_states, self.use_cuda).view(-1, self.state_dim)
         dones_var = to_tensor_var(batch.dones, self.use_cuda).view(-1, 1)
 
-        print("DQN States/actions/rewards/dones var")
-        print(states_var)
-        print(actions_var)
-        print(rewards_var)
-        print(dones_var)
+        # print("DQN States/actions/rewards/dones var")
+        # print(states_var)
+        # print(actions_var)
+        # print(rewards_var)
+        # print(dones_var)
 
         # compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
