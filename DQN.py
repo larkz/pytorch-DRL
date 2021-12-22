@@ -91,7 +91,7 @@ class DQN(Agent):
             # loss = th.nn.functional.smooth_l1_loss(current_q, target_q)
             # loss = th.nn.functional.smooth_l1_loss(current_value + nash_epsilon, next_value)
         else:
-            loss = th.nn.MSELoss()(current_q, target_q + nash_epsilon)
+            loss = th.nn.MSELoss()(current_q, target_q)
             # loss = th.nn.MSELoss()(current_value, next_value)
             # loss = th.nn.MSELoss()(current_value + nash_epsilon, next_value)
         loss.backward()
