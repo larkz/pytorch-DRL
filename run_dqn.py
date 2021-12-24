@@ -18,8 +18,8 @@ EVAL_INTERVAL = 100
 # max steps in each episode, prevent from running too long
 MAX_STEPS = 30000 # None
 
-MEMORY_CAPACITY = 10000
-BATCH_SIZE = 10 # 100
+MEMORY_CAPACITY = 100
+BATCH_SIZE = 100 # 100
 CRITIC_LOSS = "mse"
 MAX_GRAD_NORM = None
 
@@ -31,7 +31,7 @@ EPSILON_DECAY = 500
 
 DONE_PENALTY = -10.
 
-RANDOM_SEED = 2017
+RANDOM_SEED = 2012
 
 
 def run(env_id="CartPole-v0"):

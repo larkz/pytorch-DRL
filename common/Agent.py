@@ -186,4 +186,6 @@ class Agent(object):
                 infos_i.append(info)
             rewards.append(rewards_i)
             infos.append(infos_i)
+        gc.collect()
+        th.cuda.empty_cache()
         return rewards, infos
