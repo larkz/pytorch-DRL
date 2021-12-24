@@ -107,6 +107,12 @@ class DQN(Agent):
             nn.utils.clip_grad_norm(self.actor.parameters(), self.max_grad_norm)
         self.actor_optimizer.step()
 
+        del states_var
+        del actions_var
+        del rewards_var
+        del next_states_var
+        del dones_var
+
     # choose an action based on state with random noise added for exploration in training
     def exploration_action(self, state):
         epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
@@ -126,4 +132,6 @@ class DQN(Agent):
         else:
             state_action_value = state_action_value_var.data.numpy()[0]
         action = np.argmax(state_action_value)
+        
+        del state_var
         return action
