@@ -5,7 +5,7 @@ import numpy as np
 
 from common.Memory import ReplayMemory
 from common.utils import identity
-
+import gc
 
 class Agent(object):
     """
@@ -91,6 +91,8 @@ class Agent(object):
             self.episode_done = False
         self.n_steps += 1
         self.memory.push(state, action, reward, next_state, done)
+        gc.collect()
+        th.cuda.empty_cache()
 
     # take n steps
     def _take_n_steps(self):
@@ -126,6 +128,8 @@ class Agent(object):
         rewards = self._discount_reward(rewards, final_value)
         self.n_steps += 1
         self.memory.push(states, actions, rewards)
+        gc.collect()
+        th.cuda.empty_cache()
 
     # discount roll out rewards
     def _discount_reward(self, rewards, final_value):
@@ -134,6 +138,9 @@ class Agent(object):
         for t in reversed(range(0, len(rewards))):
             running_add = running_add * self.reward_gamma + rewards[t]
             discounted_r[t] = running_add
+        
+        gc.collect()
+        th.cuda.empty_cache()
         return discounted_r
 
     # soft update the actor target network or critic target network

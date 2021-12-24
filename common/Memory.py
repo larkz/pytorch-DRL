@@ -1,6 +1,8 @@
 
 import random
 from collections import namedtuple
+import gc
+import torch as th
 
 
 Experience = namedtuple("Experience",
@@ -21,6 +23,8 @@ class ReplayMemory(object):
             self.memory.append(None)
         self.memory[self.position] = Experience(state, action, reward, next_state, done)
         self.position = (self.position + 1) % self.capacity
+        gc.collect()
+        th.cuda.empty_cache()
 
     def push(self, states, actions, rewards, next_states=None, dones=None):
         if isinstance(states, list):
@@ -32,12 +36,17 @@ class ReplayMemory(object):
                     self._push_one(s, a, r)
         else:
             self._push_one(states, actions, rewards, next_states, dones)
+        gc.collect()
+        th.cuda.empty_cache()
 
     def sample(self, batch_size):
         if batch_size > len(self.memory):
             batch_size = len(self.memory)
         transitions = random.sample(self.memory, batch_size)
         batch = Experience(*zip(*transitions))
+
+        gc.collect()
+        th.cuda.empty_cache()
         return batch
 
     def __len__(self):

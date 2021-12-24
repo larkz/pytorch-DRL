@@ -7,6 +7,8 @@ import gym
 import numpy as np
 import matplotlib.pyplot as plt
 
+import torch as th
+import gc
 
 MAX_EPISODES = 10000
 EPISODES_BEFORE_TRAIN = 0
@@ -70,6 +72,8 @@ def run(env_id="CartPole-v0"):
             print("Episode %d, Average Reward %.2f" % (dqn.n_episodes+1, rewards_mu))
             episodes.append(dqn.n_episodes+1)
             eval_rewards.append(rewards_mu)
+            gc.collect()
+            th.cuda.empty_cache()
 
     episodes = np.array(episodes)
     eval_rewards = np.array(eval_rewards)

@@ -9,7 +9,7 @@ from common.Agent import Agent
 from common.Model import ActorNetwork
 from common.utils import identity, to_tensor_var
 from market_mdp.MarketEnv import MarketEnv
-
+import gc
 
 class DQN(Agent):
     """
@@ -113,6 +113,9 @@ class DQN(Agent):
         del next_states_var
         del dones_var
 
+        gc.collect()
+        th.cuda.empty_cache()
+
     # choose an action based on state with random noise added for exploration in training
     def exploration_action(self, state):
         epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
@@ -121,6 +124,8 @@ class DQN(Agent):
             action = np.random.choice(self.action_dim)
         else:
             action = self.action(state)
+        gc.collect()
+        th.cuda.empty_cache()
         return action
 
     # choose an action based on state for execution
@@ -132,6 +137,8 @@ class DQN(Agent):
         else:
             state_action_value = state_action_value_var.data.numpy()[0]
         action = np.argmax(state_action_value)
-        
+
         del state_var
+        gc.collect()
+        th.cuda.empty_cache()
         return action
