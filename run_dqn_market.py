@@ -12,7 +12,7 @@ from market_mdp.MarketEnv import MarketEnv
 # gc.collect()
 # torch.cuda.empty_cache()
 
-MAX_EPISODES = 100000
+MAX_EPISODES = 1000
 EPISODES_BEFORE_TRAIN = 0
 EVAL_EPISODES = 10
 EVAL_INTERVAL = 100
@@ -20,7 +20,7 @@ EVAL_INTERVAL = 100
 # max steps in each episode, prevent from running too long
 MAX_STEPS = 10000 # None
 
-MEMORY_CAPACITY = 10000
+MEMORY_CAPACITY = 1000
 BATCH_SIZE = 10 # 100
 CRITIC_LOSS = "mse"
 MAX_GRAD_NORM = None

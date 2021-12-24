@@ -3,7 +3,7 @@ import numpy as np
 class MarketEnv():
 
     def __init__(self):
-        self.max_inventory = 100
+        self.max_inventory = 2500
         self.state_env_dim = 2
         
         self.inventory = self.max_inventory
@@ -36,7 +36,7 @@ class MarketEnv():
         set_price = self.action_space[action_index]
 
         reward = ((previous_ref_price + set_price)/2) * demand
-        self.current_state[0] = self.current_state[0] -1 
+        self.current_state[0] = self.current_state[0] - demand
 
         inventory = self.current_state[0] 
         next_state = np.array([inventory , set_price])
