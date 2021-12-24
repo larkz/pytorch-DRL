@@ -15,7 +15,7 @@ from market_mdp.MarketEnv import MarketEnv
 MAX_EPISODES = 1000
 EPISODES_BEFORE_TRAIN = 0
 EVAL_EPISODES = 10
-EVAL_INTERVAL = 100
+EVAL_INTERVAL = 10
 
 # max steps in each episode, prevent from running too long
 MAX_STEPS = 10000 # None
