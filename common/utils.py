@@ -3,6 +3,7 @@ import torch as th
 from torch.autograd import Variable
 import numpy as np
 
+cuda0 = th.device('cuda:0')
 
 def identity(x):
     return x
@@ -32,7 +33,7 @@ def to_tensor_var(x, use_cuda=True, dtype="float"):
     ByteTensor = th.cuda.ByteTensor if use_cuda else th.ByteTensor
     if dtype == "float":
         x = np.array(x, dtype=np.float64).tolist()
-        return Variable(FloatTensor(x))
+        return Variable(FloatTensor(x, device = cuda0))
     elif dtype == "long":
         x = np.array(x, dtype=np.long).tolist()
         return Variable(LongTensor(x))
