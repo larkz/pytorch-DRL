@@ -8,6 +8,7 @@ import numpy as np
 from common.Agent import Agent
 from common.Model import ActorNetwork
 from common.utils import identity, to_tensor_var
+from market_mdp.MarketEnv import MarketEnv
 
 
 class DQN(Agent):
