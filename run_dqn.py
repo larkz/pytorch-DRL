@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import torch as th
 import gc
 
-MAX_EPISODES = 10000
+MAX_EPISODES = 1000
 EPISODES_BEFORE_TRAIN = 0
 EVAL_EPISODES = 10
 EVAL_INTERVAL = 100
