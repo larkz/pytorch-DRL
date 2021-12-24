@@ -25,10 +25,9 @@ class MarketEnv():
     
     # .step(action)
     def step(self, action):
-        
-        demand_lambda = 50 - 0.5* action
-        demand = np.floor(np.random.poisson(demand_lambda))
         previous_ref_price = self.current_state[1]
+        demand_lambda = 50 - 0.5* previous_ref_price
+        demand = np.floor(np.random.poisson(demand_lambda))
         reward = ((previous_ref_price + action)/2) * demand
         self.inventory -= 1
         next_state = np.array([self.inventory, action])
