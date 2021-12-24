@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from market_mdp.MarketEnv import MarketEnv
 
-MAX_EPISODES = 10000
+MAX_EPISODES = 100000
 EPISODES_BEFORE_TRAIN = 0
 EVAL_EPISODES = 10
 EVAL_INTERVAL = 100
