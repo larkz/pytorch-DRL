@@ -36,9 +36,11 @@ class MarketEnv():
         set_price = self.action_space[action_index]
 
         reward = ((previous_ref_price + set_price)/2) * demand
-        self.inventory -= 1
-        next_state = np.array([self.inventory, set_price])
+        self.current_state[0] = self.current_state[0] -1 
+
+        inventory = self.current_state[0] 
+        next_state = np.array([inventory , set_price])
         
-        return next_state, reward, self.inventory > 0, dict()
+        return next_state, reward, inventory  > 0, dict()
 
 
