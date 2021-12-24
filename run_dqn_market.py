@@ -6,7 +6,7 @@ import sys
 import gym
 import numpy as np
 import matplotlib.pyplot as plt
-
+from market_mdp.MarketEnv import MarketEnv
 
 MAX_EPISODES = 1000
 EPISODES_BEFORE_TRAIN = 0
@@ -32,22 +32,13 @@ DONE_PENALTY = -10.
 RANDOM_SEED = 2017
 
 
-def run(env_id="CartPole-v0"):
+def run():
 
-    env = gym.make(env_id)
-    env.seed(RANDOM_SEED)
-    env_eval = gym.make(env_id)
-    env_eval.seed(RANDOM_SEED)
+    env = MarketEnv()
+    env_eval = MarketEnv()
 
-    env._max_episode_steps = 600
-    env_eval._max_episode_steps = 600
-
-    state_dim = env.observation_space.shape[0]
-    
-    if len(env.action_space.shape) > 1:
-        action_dim = env.action_space.shape[0]
-    else:
-        action_dim = env.action_space.n
+    state_dim = env.state_env_dim
+    action_dim = env.action_env_dim
 
     dqn = DQN(env=env, memory_capacity=MEMORY_CAPACITY,
               state_dim=state_dim, action_dim=action_dim,
@@ -73,6 +64,7 @@ def run(env_id="CartPole-v0"):
 
     episodes = np.array(episodes)
     eval_rewards = np.array(eval_rewards)
+    env_id = "market_sim"
     np.savetxt("./output/%s_dqn_episodes.txt"%env_id, episodes)
     np.savetxt("./output/%s_dqn_eval_rewards.txt"%env_id, eval_rewards)
 
