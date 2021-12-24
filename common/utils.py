@@ -33,16 +33,28 @@ def to_tensor_var(x, use_cuda=True, dtype="float"):
     ByteTensor = th.cuda.ByteTensor if use_cuda else th.ByteTensor
     if dtype == "float":
         x = np.array(x, dtype=np.float64).tolist()
-        return Variable(FloatTensor(x, device = cuda0))
+        if use_cuda:
+            return Variable(FloatTensor(x, device = cuda0))
+        else:
+            return Variable(FloatTensor(x))
     elif dtype == "long":
         x = np.array(x, dtype=np.long).tolist()
-        return Variable(LongTensor(x))
+        if use_cuda:
+            return Variable(LongTensor(x, device = cuda0))
+        else:
+            return Variable(LongTensor(x))
     elif dtype == "byte":
         x = np.array(x, dtype=np.byte).tolist()
-        return Variable(ByteTensor(x))
+        if use_cuda:
+            return Variable(ByteTensor(x, device = cuda0))
+        else:
+            return Variable(ByteTensor(x))
     else:
         x = np.array(x, dtype=np.float64).tolist()
-        return Variable(FloatTensor(x))
+        if use_cuda:
+            return Variable(FloatTensor(x, device = cuda0))
+        else:
+            return Variable(FloatTensor(x))
 
 
 def agg_double_list(l):
