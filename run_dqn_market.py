@@ -8,6 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from market_mdp.MarketEnv import MarketEnv
 
+import torch, gc
+gc.collect()
+torch.cuda.empty_cache()
+
 MAX_EPISODES = 100000
 EPISODES_BEFORE_TRAIN = 0
 EVAL_EPISODES = 10
