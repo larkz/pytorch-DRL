@@ -26,7 +26,7 @@ class Agent(object):
                  memory_capacity=10000, max_steps=10000,
                  reward_gamma=0.99, reward_scale=1., done_penalty=None,
                  actor_hidden_size=32, critic_hidden_size=32,
-                 actor_output_act=identity, critic_loss="mse",
+                 actor_output_act=identity, critic_loss="rmsprop",
                  actor_lr=0.01, critic_lr=0.01,
                  optimizer_type="adam", entropy_reg=0.01,
                  max_grad_norm=0.5, batch_size=100, episodes_before_train=100,
