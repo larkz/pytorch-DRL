@@ -20,7 +20,7 @@ EVAL_INTERVAL = 10
 # max steps in each episode, prevent from running too long
 MAX_STEPS = 1000 # None
 
-MEMORY_CAPACITY = 100
+MEMORY_CAPACITY = 1000
 BATCH_SIZE = 9999 # 100
 CRITIC_LOSS = "rmsprop"
 MAX_GRAD_NORM = None
